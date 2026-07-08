@@ -197,6 +197,10 @@ public class Drivetrain {
     m_backRightMotor.setVoltage(speeds.rearRightMetersPerSecond);
   }
 
+  public void resetGyro(){
+    navx.reset();
+  }
+
   /**
    * Method to drive the robot using joystick info.
    *
