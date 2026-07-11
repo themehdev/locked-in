@@ -19,6 +19,12 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(10);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(10);
 
+  private final boolean LEFT_SIDE_AUTO = false;
+
+  private final double LEFT_SIDE_AUTO_DELAY = 4;
+
+  private final double AUTO_DELAY_MULTIPLIER = 7.5/(Drivetrain.kMaxSpeed - 0.75);
+
   public void autonomousInit() {
         m_enabledTimer.reset();
         m_enabledTimer.start();
@@ -26,12 +32,28 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    if(!m_enabledTimer.hasElapsed(5.0) && m_enabledTimer.hasElapsed(1.0)){
-      drive(Drivetrain.kMaxSpeed, 0, 0, false);
-    }else if (m_enabledTimer.hasElapsed(6.0) && !m_enabledTimer.hasElapsed(9) ){
-      drive(-Drivetrain.kMaxSpeed, 0, -0.75, false);
+    if(LEFT_SIDE_AUTO){
+      if(!m_enabledTimer.hasElapsed((4.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) && m_enabledTimer.hasElapsed((LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER)){
+        drive(Drivetrain.kMaxSpeed, 0, 0, false);
+      }else if (m_enabledTimer.hasElapsed((6.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) && !m_enabledTimer.hasElapsed((9.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) ){
+        drive(-Drivetrain.kMaxSpeed, 0, -1.25 * 1/AUTO_DELAY_MULTIPLIER, false);
+      }else{
+        drive(0, 0, 0, false);
+      }
     }else{
-      drive(0, 0, 0, false);
+      if(!m_enabledTimer.hasElapsed(1.8*AUTO_DELAY_MULTIPLIER)){
+        drive(0, -Drivetrain.kMaxSpeed, 0, false);
+      }else if (!m_enabledTimer.hasElapsed(6.0*AUTO_DELAY_MULTIPLIER)){
+        drive(Drivetrain.kMaxSpeed, 0, 1.75 * 1/AUTO_DELAY_MULTIPLIER, false);
+      }else if (!m_enabledTimer.hasElapsed(6.6*AUTO_DELAY_MULTIPLIER)){
+        drive(0, 0, -Drivetrain.kMaxSpeed, false);
+      }else if (!m_enabledTimer.hasElapsed(7.6*AUTO_DELAY_MULTIPLIER)){
+        drive(Drivetrain.kMaxSpeed, 0, 0, false);
+      }else if (!m_enabledTimer.hasElapsed(11.0*AUTO_DELAY_MULTIPLIER)){
+        drive(-Drivetrain.kMaxSpeed * 0.5, -Drivetrain.kMaxSpeed * 0.75, 0, false);
+      }else{
+        drive(0, 0, 0, false);
+      }
     }
     
 

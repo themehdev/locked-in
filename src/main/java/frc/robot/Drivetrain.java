@@ -10,6 +10,7 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -23,7 +24,7 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 
 /** Represents a mecanum drive style drivetrain. */
 public class Drivetrain {
-  public static final double kMaxSpeed = 7.5; // 3 meters per second
+  public static final double kMaxSpeed = 12.0;
 
   private final SparkMax m_frontLeftMotor = new SparkMax(1, MotorType.kBrushed);
   private final SparkMax m_frontRightMotor = new SparkMax(2, MotorType.kBrushed);
@@ -79,6 +80,8 @@ public class Drivetrain {
 
         flconfig.inverted(true);
 
+        flconfig.idleMode(IdleMode.kBrake);
+
         m_frontLeftMotor.configure(flconfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         SparkMaxConfig frconfig = new SparkMaxConfig();
@@ -104,6 +107,8 @@ public class Drivetrain {
 
         frconfig.inverted(false);
 
+        frconfig.idleMode(IdleMode.kBrake);
+
         m_frontRightMotor.configure(frconfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         SparkMaxConfig blconfig = new SparkMaxConfig();
@@ -128,6 +133,9 @@ public class Drivetrain {
         blconfig.smartCurrentLimit(9);
 
         blconfig.inverted(true);
+
+        blconfig.idleMode(IdleMode.kBrake);
+
         m_backLeftMotor.configure(blconfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         SparkMaxConfig brconfig = new SparkMaxConfig();
@@ -152,6 +160,9 @@ public class Drivetrain {
         brconfig.smartCurrentLimit(9);
 
         brconfig.inverted(false);
+
+        brconfig.idleMode(IdleMode.kBrake);
+
         m_backRightMotor.configure(brconfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // We need to invert one side of the drivetrain so that positive voltages
