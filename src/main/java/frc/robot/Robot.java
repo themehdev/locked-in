@@ -41,16 +41,16 @@ public class Robot extends TimedRobot {
         drive(0, 0, 0, false);
       }
     }else{
-      if(!m_enabledTimer.hasElapsed(1.8*AUTO_DELAY_MULTIPLIER)){
+      if(!m_enabledTimer.hasElapsed(1.7*AUTO_DELAY_MULTIPLIER)){
         drive(0, -Drivetrain.kMaxSpeed, 0, false);
       }else if (!m_enabledTimer.hasElapsed(6.0*AUTO_DELAY_MULTIPLIER)){
-        drive(Drivetrain.kMaxSpeed, 0, 1.75 * 1/AUTO_DELAY_MULTIPLIER, false);
+        drive(Drivetrain.kMaxSpeed, 0, 1.7 * 1/AUTO_DELAY_MULTIPLIER, false);
       }else if (!m_enabledTimer.hasElapsed(6.6*AUTO_DELAY_MULTIPLIER)){
         drive(0, 0, -Drivetrain.kMaxSpeed, false);
       }else if (!m_enabledTimer.hasElapsed(7.6*AUTO_DELAY_MULTIPLIER)){
         drive(Drivetrain.kMaxSpeed, 0, 0, false);
       }else if (!m_enabledTimer.hasElapsed(11.0*AUTO_DELAY_MULTIPLIER)){
-        drive(-Drivetrain.kMaxSpeed * 0.5, -Drivetrain.kMaxSpeed * 0.75, 0, false);
+        drive(-Drivetrain.kMaxSpeed * 0.6, -Drivetrain.kMaxSpeed * 0.7, 0, false);
       }else{
         drive(0, 0, 0, false);
       }
