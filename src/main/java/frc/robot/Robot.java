@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
         drive(0, -Drivetrain.kMaxSpeed, 0, false);
       }else if (!m_enabledTimer.hasElapsed(6.0*AUTO_DELAY_MULTIPLIER)){
         drive(Drivetrain.kMaxSpeed, 0, 1.7 * 1/AUTO_DELAY_MULTIPLIER, false);
-      }else if (!m_enabledTimer.hasElapsed(6.6*AUTO_DELAY_MULTIPLIER)){
+      }else if (!m_enabledTimer.hasElapsed(6.7*AUTO_DELAY_MULTIPLIER)){
         drive(0, 0, -Drivetrain.kMaxSpeed, false);
       }else if (!m_enabledTimer.hasElapsed(7.6*AUTO_DELAY_MULTIPLIER)){
         drive(Drivetrain.kMaxSpeed, 0, 0, false);
