@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import javax.net.ssl.TrustManagerFactory;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -12,6 +14,8 @@ import edu.wpi.first.wpilibj.XboxController;
 public class Robot extends TimedRobot {
   private final XboxController m_controller = new XboxController(0);
   private final Drivetrain m_mecanum = new Drivetrain();
+  private final Arm m_arm = new Arm();
+  Arm.POSITIONS armPos = Arm.POSITIONS.STOWED;
   private final Timer m_enabledTimer = new Timer();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
@@ -28,32 +32,33 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
         m_enabledTimer.reset();
         m_enabledTimer.start();
+        armPos = Arm.POSITIONS.STOWED;
     }
 
   @Override
   public void autonomousPeriodic() {
     if(LEFT_SIDE_AUTO){
-      if(!m_enabledTimer.hasElapsed((4.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) && m_enabledTimer.hasElapsed((LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER)){
-        drive(Drivetrain.kMaxSpeed, 0, 0, false);
-      }else if (m_enabledTimer.hasElapsed((6.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) && !m_enabledTimer.hasElapsed((9.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) ){
-        drive(-Drivetrain.kMaxSpeed, 0, -1.25 * 1/AUTO_DELAY_MULTIPLIER, false);
-      }else{
-        drive(0, 0, 0, false);
-      }
+      // if(!m_enabledTimer.hasElapsed((4.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) && m_enabledTimer.hasElapsed((LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER)){
+      //   drive(Drivetrain.kMaxSpeed, 0, 0, false);
+      // }else if (m_enabledTimer.hasElapsed((10.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) && !m_enabledTimer.hasElapsed((13.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) ){
+      //   drive(-Drivetrain.kMaxSpeed, 0, -1.25 * 1/AUTO_DELAY_MULTIPLIER, false);
+      // }else{
+      //   drive(0, 0, 0, false);
+      // }
     }else{
-      if(!m_enabledTimer.hasElapsed(1.7*AUTO_DELAY_MULTIPLIER)){
-        drive(0, -Drivetrain.kMaxSpeed, 0, false);
-      }else if (!m_enabledTimer.hasElapsed(6.0*AUTO_DELAY_MULTIPLIER)){
-        drive(Drivetrain.kMaxSpeed, 0, 1.7 * 1/AUTO_DELAY_MULTIPLIER, false);
-      }else if (!m_enabledTimer.hasElapsed(6.7*AUTO_DELAY_MULTIPLIER)){
-        drive(0, 0, -Drivetrain.kMaxSpeed, false);
-      }else if (!m_enabledTimer.hasElapsed(7.6*AUTO_DELAY_MULTIPLIER)){
-        drive(Drivetrain.kMaxSpeed, 0, 0, false);
-      }else if (!m_enabledTimer.hasElapsed(11.0*AUTO_DELAY_MULTIPLIER)){
-        drive(-Drivetrain.kMaxSpeed * 0.6, -Drivetrain.kMaxSpeed * 0.7, 0, false);
-      }else{
-        drive(0, 0, 0, false);
-      }
+      // if(!m_enabledTimer.hasElapsed(1.3*AUTO_DELAY_MULTIPLIER)){
+      //   drive(0, -Drivetrain.kMaxSpeed, 0, false);
+      // }else if (!m_enabledTimer.hasElapsed(5.5*AUTO_DELAY_MULTIPLIER)){
+      //   drive(Drivetrain.kMaxSpeed, 0, 0.5 * 1/AUTO_DELAY_MULTIPLIER, false);
+      // }else if (!m_enabledTimer.hasElapsed(6.2*AUTO_DELAY_MULTIPLIER)){
+      //   drive(0, 0, -Drivetrain.kMaxSpeed, false);
+      // }else if (!m_enabledTimer.hasElapsed(7.0*AUTO_DELAY_MULTIPLIER)){
+      //   drive(Drivetrain.kMaxSpeed, 0, 0, false);
+      // }else if (!m_enabledTimer.hasElapsed(10.0*AUTO_DELAY_MULTIPLIER)){
+      //   drive(-Drivetrain.kMaxSpeed * 0.8, -Drivetrain.kMaxSpeed * 0.25, 0, false);
+      // }else{
+      //   drive(0, 0, 0, false);
+      // }
     }
     
 
@@ -75,6 +80,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+
+    if(m_controller.getYButton() && m_controller.getBButton()){
+      m_mecanum.resetGyro();
+      System.out.println("Resetting Gyro...");
+    }
+
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     final var xSpeed = -m_xspeedLimiter.calculate(deadbandController(m_controller.getLeftY())) * Drivetrain.kMaxSpeed;
@@ -92,10 +103,90 @@ public class Robot extends TimedRobot {
 
     drive(xSpeed, ySpeed, rot, true);
 
-    if(m_controller.getYButton() && m_controller.getBButton()){
-      m_mecanum.resetGyro();
-      System.out.println("Resetting Gyro...");
+    switch (armPos) {
+      case STOWED:
+        armPos = Arm.POSITIONS.WAIT_COLLECT;
+        break;
+      case WAIT_COLLECT:
+        if(m_controller.getRightBumperButtonPressed()){
+          armPos = Arm.POSITIONS.COLLECT_L1;
+        }
+        break;
+      case COLLECT_L1:
+        if(m_controller.getRightBumperButtonPressed()){
+          armPos = Arm.POSITIONS.WAIT_COLLECT;
+        }else if(m_controller.getXButtonPressed()){
+          armPos = Arm.POSITIONS.TOP_READY;
+        }else if(m_controller.getPOV() == 0){
+          armPos = Arm.POSITIONS.L3;
+        }else if(m_controller.getPOV() == 270){
+          armPos = Arm.POSITIONS.L2;
+        }else if(m_controller.getPOV() == 180){
+          armPos = Arm.POSITIONS.COLLECT_L1;
+        }
+
+        break;
+      case L2:
+        if(m_controller.getRightBumperButtonPressed()){
+          armPos = Arm.POSITIONS.L2_PLACED;
+        }else if(m_controller.getXButtonPressed()){
+          armPos = Arm.POSITIONS.TOP_READY;
+        }else if(m_controller.getPOV() == 0){
+          armPos = Arm.POSITIONS.L3;
+        }else if(m_controller.getPOV() == 270){
+          armPos = Arm.POSITIONS.L2;
+        }else if(m_controller.getPOV() == 180){
+          armPos = Arm.POSITIONS.COLLECT_L1;
+        }
+        
+        break;
+      case L3:
+        if(m_controller.getRightBumperButtonPressed()){
+          armPos = Arm.POSITIONS.L3_PLACED;
+        }else if(m_controller.getXButtonPressed()){
+          armPos = Arm.POSITIONS.TOP_READY;
+        }else if(m_controller.getPOV() == 0){
+          armPos = Arm.POSITIONS.L3;
+        }else if(m_controller.getPOV() == 270){
+          armPos = Arm.POSITIONS.L2;
+        }else if(m_controller.getPOV() == 180){
+          armPos = Arm.POSITIONS.COLLECT_L1;
+        }
+
+        break;
+      case TOP_READY:
+        if(m_controller.getRightBumperButtonPressed()){
+          armPos = Arm.POSITIONS.TOP_PLACING;
+        }else if(m_controller.getXButtonPressed()){
+          armPos = Arm.POSITIONS.TOP_READY;
+        }else if(m_controller.getPOV() == 0){
+          armPos = Arm.POSITIONS.L3;
+        }else if(m_controller.getPOV() == 270){
+          armPos = Arm.POSITIONS.L2;
+        }else if(m_controller.getPOV() == 180){
+          armPos = Arm.POSITIONS.COLLECT_L1;
+        }
+
+        break;
+      case L2_PLACED:
+      case L3_PLACED:
+      case TOP_PLACED:
+        if(m_controller.getRightBumperButtonPressed()){
+          armPos = Arm.POSITIONS.WAIT_COLLECT;
+        }
+        break;
+      case TOP_PLACING:
+        if(m_controller.getRightBumperButtonPressed()){
+          armPos = Arm.POSITIONS.TOP_PLACED;
+        }
+        break;
+        
+      default:
+        break;
     }
+
+    m_arm.setPosition(armPos);
+
   }
 
   private void drive(double x, double y, double rot, boolean fieldRelative) {

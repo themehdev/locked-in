@@ -24,7 +24,7 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 
 /** Represents a mecanum drive style drivetrain. */
 public class Drivetrain {
-  public static final double kMaxSpeed = 12.0;
+  public static final double kMaxSpeed = 13.0;
 
   private final SparkMax m_frontLeftMotor = new SparkMax(1, MotorType.kBrushed);
   private final SparkMax m_frontRightMotor = new SparkMax(2, MotorType.kBrushed);

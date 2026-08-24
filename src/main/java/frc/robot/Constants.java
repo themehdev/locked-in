@@ -29,4 +29,21 @@ public class Constants {
     public static final Translation2d BackRight= new Translation2d(-0.381,-0.381);  
 
     public static final double maxLinearSpeedMetersPerSecond= 1.0;
+
+
+    public static final double ARM_kP= 0.1; 
+    public static final double ARM_kI= 0.0;
+    public static final double ARM_kD= 0.0;
+    public static final double ARM_kS= 0.1;
+    public static final double ARM_kV= 0.1;
+    public static final double ARM_kA= 0.0;
+
+    public static final double ARM_cruiseVelocity= 750.0;
+    public static final double ARM_acceleration= 100.0; //RPM/s
+    public static final double ARM_allowedProfileError= 5.0; //RPM
+
+    public static final double ARM_MOVING_VOLTAGE = 10.0;
+    public static final double ARM_HOLDING_VOLTAGE = 3.0;
+    public static final double ARM_HOLDING_THRESHOLD = 8.0;
+    public static final double ARM_DONE_THRESHOLD = 1.0;
 }
