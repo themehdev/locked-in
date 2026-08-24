@@ -14,27 +14,6 @@ public class Arm {
 
     public final Servo wrist = new Servo(0);
 
-    public enum POSITIONS {
-        STOWED(90.0, -90.0),
-        WAIT_COLLECT(0.0, 0.0),
-        COLLECT_L1(10.0, -10.0), 
-        L2(30.0, -30.0), 
-        L2_PLACED(20.0, -20.0),
-        L3(60.0, -60.0), 
-        L3_PLACED(50.0, -50.0),
-        TOP_READY(100.0, -100.0),
-        TOP_PLACING(100.0, -30.0),
-        TOP_PLACED(110.0, -20.0);
-
-        public final double armPos;
-        public final double wristPos;
-
-        POSITIONS(double armPos, double wristPos) {
-            this.armPos = armPos;
-            this.wristPos = wristPos;
-        }
-    }
-
     public Arm() {
         SparkMaxConfig armconfig = new SparkMaxConfig();
         armconfig.encoder.countsPerRevolution(Constants.ENCODER_COUNTS_PER_REVOLUTION)
@@ -80,7 +59,7 @@ public class Arm {
         }
     }
 
-    public void setPosition(POSITIONS position) {
+    public void setPosition(Constants.POSITIONS position) {
         wrist.set(position.wristPos * 1.0/300.0);
         setArmPosition(position.armPos);
     }

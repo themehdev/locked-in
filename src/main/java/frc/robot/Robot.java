@@ -13,7 +13,7 @@ public class Robot extends TimedRobot {
   private final XboxController m_controller = new XboxController(0);
   private final Drivetrain m_mecanum = new Drivetrain();
   private final Arm m_arm = new Arm();
-  Arm.POSITIONS armPos = Arm.POSITIONS.STOWED;
+  Constants.POSITIONS armPos = Constants.POSITIONS.STOWED;
   private final Timer m_enabledTimer = new Timer();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
@@ -30,11 +30,12 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
         m_enabledTimer.reset();
         m_enabledTimer.start();
-        armPos = Arm.POSITIONS.STOWED;
+        armPos = Constants.POSITIONS.STOWED;
     }
 
   @Override
   public void autonomousPeriodic() {
+
     if(LEFT_SIDE_AUTO){
       // if(!m_enabledTimer.hasElapsed((4.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) && m_enabledTimer.hasElapsed((LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER)){
       //   drive(Drivetrain.kMaxSpeed, 0, 0, false);
@@ -103,80 +104,96 @@ public class Robot extends TimedRobot {
 
     switch (armPos) {
       case STOWED:
-        armPos = Arm.POSITIONS.WAIT_COLLECT;
+        armPos = Constants.POSITIONS.WAIT_COLLECT;
         break;
       case WAIT_COLLECT:
         if(m_controller.getRightBumperButtonPressed()){
-          armPos = Arm.POSITIONS.COLLECT_L1;
+          armPos = Constants.POSITIONS.COLLECT;
         }
         break;
-      case COLLECT_L1:
+      case COLLECT:
         if(m_controller.getRightBumperButtonPressed()){
-          armPos = Arm.POSITIONS.WAIT_COLLECT;
+          armPos = Constants.POSITIONS.WAIT_COLLECT;
         }else if(m_controller.getXButtonPressed()){
-          armPos = Arm.POSITIONS.TOP_READY;
+          armPos = Constants.POSITIONS.TOP_READY;
         }else if(m_controller.getPOV() == 0){
-          armPos = Arm.POSITIONS.L3;
+          armPos = Constants.POSITIONS.L3;
         }else if(m_controller.getPOV() == 270){
-          armPos = Arm.POSITIONS.L2;
+          armPos = Constants.POSITIONS.L2;
         }else if(m_controller.getPOV() == 180){
-          armPos = Arm.POSITIONS.COLLECT_L1;
+          armPos = Constants.POSITIONS.L1;
+        }
+        break;
+      case L1:
+        if(m_controller.getRightBumperButtonPressed()){
+          armPos = Constants.POSITIONS.L1_PLACED;
+        }else if(m_controller.getXButtonPressed()){
+          armPos = Constants.POSITIONS.TOP_READY;
+        }else if(m_controller.getPOV() == 0){
+          armPos = Constants.POSITIONS.L3;
+        }else if(m_controller.getPOV() == 270){
+          armPos = Constants.POSITIONS.L2;
+        }else if(m_controller.getPOV() == 180){
+          armPos = Constants.POSITIONS.L1;
         }
 
         break;
       case L2:
         if(m_controller.getRightBumperButtonPressed()){
-          armPos = Arm.POSITIONS.L2_PLACED;
+          armPos = Constants.POSITIONS.L2_PLACED;
         }else if(m_controller.getXButtonPressed()){
-          armPos = Arm.POSITIONS.TOP_READY;
+          armPos = Constants.POSITIONS.TOP_READY;
         }else if(m_controller.getPOV() == 0){
-          armPos = Arm.POSITIONS.L3;
+          armPos = Constants.POSITIONS.L3;
         }else if(m_controller.getPOV() == 270){
-          armPos = Arm.POSITIONS.L2;
+          armPos = Constants.POSITIONS.L2;
         }else if(m_controller.getPOV() == 180){
-          armPos = Arm.POSITIONS.COLLECT_L1;
+          armPos = Constants.POSITIONS.L1;
         }
         
         break;
       case L3:
         if(m_controller.getRightBumperButtonPressed()){
-          armPos = Arm.POSITIONS.L3_PLACED;
+          armPos = Constants.POSITIONS.L3_PLACED;
         }else if(m_controller.getXButtonPressed()){
-          armPos = Arm.POSITIONS.TOP_READY;
+          armPos = Constants.POSITIONS.TOP_READY;
         }else if(m_controller.getPOV() == 0){
-          armPos = Arm.POSITIONS.L3;
+          armPos = Constants.POSITIONS.L3;
         }else if(m_controller.getPOV() == 270){
-          armPos = Arm.POSITIONS.L2;
+          armPos = Constants.POSITIONS.L2;
         }else if(m_controller.getPOV() == 180){
-          armPos = Arm.POSITIONS.COLLECT_L1;
+          armPos = Constants.POSITIONS.L1;
         }
 
         break;
       case TOP_READY:
         if(m_controller.getRightBumperButtonPressed()){
-          armPos = Arm.POSITIONS.TOP_PLACING;
+          armPos = Constants.POSITIONS.TOP_PLACING;
         }else if(m_controller.getXButtonPressed()){
-          armPos = Arm.POSITIONS.TOP_READY;
+          armPos = Constants.POSITIONS.TOP_READY;
         }else if(m_controller.getPOV() == 0){
-          armPos = Arm.POSITIONS.L3;
+          armPos = Constants.POSITIONS.L3;
         }else if(m_controller.getPOV() == 270){
-          armPos = Arm.POSITIONS.L2;
+          armPos = Constants.POSITIONS.L2;
         }else if(m_controller.getPOV() == 180){
-          armPos = Arm.POSITIONS.COLLECT_L1;
+          armPos = Constants.POSITIONS.L1;
         }
 
         break;
+      case TOP_PLACING:
+        if(m_controller.getRightBumperButtonPressed()){
+          armPos = Constants.POSITIONS.TOP_PLACED;
+        }
+
+        break;
+      case L1_PLACED:
       case L2_PLACED:
       case L3_PLACED:
       case TOP_PLACED:
         if(m_controller.getRightBumperButtonPressed()){
-          armPos = Arm.POSITIONS.WAIT_COLLECT;
+          armPos = Constants.POSITIONS.WAIT_COLLECT;
         }
-        break;
-      case TOP_PLACING:
-        if(m_controller.getRightBumperButtonPressed()){
-          armPos = Arm.POSITIONS.TOP_PLACED;
-        }
+        
         break;
         
       default:
