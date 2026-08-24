@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import javax.net.ssl.TrustManagerFactory;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
