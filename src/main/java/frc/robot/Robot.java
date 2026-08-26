@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
         m_enabledTimer.reset();
         m_enabledTimer.start();
         armPos = Constants.POSITIONS.STOWED;
+        m_arm.resetArmEncoder();
     }
 
   @Override
@@ -75,6 +76,9 @@ public class Robot extends TimedRobot {
         // 2. Reset and start the timer when teleop is enabled
         m_enabledTimer.reset();
         m_enabledTimer.start();
+        //TODO: REMOVE LATER
+        armPos = Constants.POSITIONS.STOWED;
+        m_arm.resetArmEncoder();
     }
 
   @Override
@@ -104,7 +108,9 @@ public class Robot extends TimedRobot {
 
     switch (armPos) {
       case STOWED:
-        armPos = Constants.POSITIONS.WAIT_COLLECT;
+        if(m_controller.getRightBumperButtonPressed()){
+          armPos = Constants.POSITIONS.WAIT_COLLECT;
+        }
         break;
       case WAIT_COLLECT:
         if(m_controller.getRightBumperButtonPressed()){
@@ -114,8 +120,6 @@ public class Robot extends TimedRobot {
       case COLLECT:
         if(m_controller.getRightBumperButtonPressed()){
           armPos = Constants.POSITIONS.WAIT_COLLECT;
-        }else if(m_controller.getXButtonPressed()){
-          armPos = Constants.POSITIONS.TOP_READY;
         }else if(m_controller.getPOV() == 0){
           armPos = Constants.POSITIONS.L3;
         }else if(m_controller.getPOV() == 270){
@@ -127,8 +131,6 @@ public class Robot extends TimedRobot {
       case L1:
         if(m_controller.getRightBumperButtonPressed()){
           armPos = Constants.POSITIONS.L1_PLACED;
-        }else if(m_controller.getXButtonPressed()){
-          armPos = Constants.POSITIONS.TOP_READY;
         }else if(m_controller.getPOV() == 0){
           armPos = Constants.POSITIONS.L3;
         }else if(m_controller.getPOV() == 270){
@@ -141,8 +143,6 @@ public class Robot extends TimedRobot {
       case L2:
         if(m_controller.getRightBumperButtonPressed()){
           armPos = Constants.POSITIONS.L2_PLACED;
-        }else if(m_controller.getXButtonPressed()){
-          armPos = Constants.POSITIONS.TOP_READY;
         }else if(m_controller.getPOV() == 0){
           armPos = Constants.POSITIONS.L3;
         }else if(m_controller.getPOV() == 270){
@@ -155,41 +155,18 @@ public class Robot extends TimedRobot {
       case L3:
         if(m_controller.getRightBumperButtonPressed()){
           armPos = Constants.POSITIONS.L3_PLACED;
-        }else if(m_controller.getXButtonPressed()){
-          armPos = Constants.POSITIONS.TOP_READY;
         }else if(m_controller.getPOV() == 0){
           armPos = Constants.POSITIONS.L3;
         }else if(m_controller.getPOV() == 270){
           armPos = Constants.POSITIONS.L2;
         }else if(m_controller.getPOV() == 180){
           armPos = Constants.POSITIONS.L1;
-        }
-
-        break;
-      case TOP_READY:
-        if(m_controller.getRightBumperButtonPressed()){
-          armPos = Constants.POSITIONS.TOP_PLACING;
-        }else if(m_controller.getXButtonPressed()){
-          armPos = Constants.POSITIONS.TOP_READY;
-        }else if(m_controller.getPOV() == 0){
-          armPos = Constants.POSITIONS.L3;
-        }else if(m_controller.getPOV() == 270){
-          armPos = Constants.POSITIONS.L2;
-        }else if(m_controller.getPOV() == 180){
-          armPos = Constants.POSITIONS.L1;
-        }
-
-        break;
-      case TOP_PLACING:
-        if(m_controller.getRightBumperButtonPressed()){
-          armPos = Constants.POSITIONS.TOP_PLACED;
         }
 
         break;
       case L1_PLACED:
       case L2_PLACED:
       case L3_PLACED:
-      case TOP_PLACED:
         if(m_controller.getRightBumperButtonPressed()){
           armPos = Constants.POSITIONS.WAIT_COLLECT;
         }

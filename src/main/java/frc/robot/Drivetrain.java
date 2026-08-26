@@ -28,8 +28,8 @@ public class Drivetrain {
 
   private final SparkMax m_frontLeftMotor = new SparkMax(1, MotorType.kBrushed);
   private final SparkMax m_frontRightMotor = new SparkMax(2, MotorType.kBrushed);
-  private final SparkMax m_backLeftMotor = new SparkMax(4, MotorType.kBrushed);
-  private final SparkMax m_backRightMotor = new SparkMax(3, MotorType.kBrushed);
+  private final SparkMax m_backLeftMotor = new SparkMax(3, MotorType.kBrushed);
+  private final SparkMax m_backRightMotor = new SparkMax(4, MotorType.kBrushed);
 
   private final RelativeEncoder m_frontLeftEncoder = m_frontLeftMotor.getEncoder();
   private final RelativeEncoder m_frontRightEncoder = m_frontRightMotor.getEncoder();

@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Servo;
 public class Arm {
     public final SparkMax arm = new SparkMax(5, MotorType.kBrushed);
 
-    public final Servo wrist = new Servo(0);
+    public final Servo wrist = new Servo(9);
 
     public Arm() {
         SparkMaxConfig armconfig = new SparkMaxConfig();
@@ -41,15 +41,22 @@ public class Arm {
         armconfig.idleMode(IdleMode.kBrake);
 
         arm.configure(armconfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        resetArmEncoder();
     }
 
     private double getArmPosition() {
-        return arm.getEncoder().getPosition() * 360;
+        return (arm.getEncoder().getPosition() * 360);
+    }
+
+    public void resetArmEncoder(){
+        arm.getEncoder().setPosition(Constants.ARM_OFFSET/360.0);
     }
 
 
-    private void setArmPosition(double position) {
-        double multiplier = getArmPosition() < position ? 1.0 : -1.0;
+    private void setArmPosition(double pos) {
+        double position = pos;
+        double multiplier = getArmPosition() < position ? 1.0 : -0.0;
         if(Math.abs(getArmPosition() - position) > Constants.ARM_HOLDING_THRESHOLD) {
             arm.setVoltage(Constants.ARM_MOVING_VOLTAGE * multiplier);
         } else if (Math.abs(getArmPosition() - position) > Constants.ARM_DONE_THRESHOLD) {
@@ -60,7 +67,15 @@ public class Arm {
     }
 
     public void setPosition(Constants.POSITIONS position) {
-        wrist.set(position.wristPos * 1.0/300.0);
+        double wristPos = (position.wristPos - Constants.WRIST_OFFSET)/300.0;
+        wrist.set(wristPos);
         setArmPosition(position.armPos);
+
+        System.out.println(position.name());
+        System.out.println(position.armPos);
+        System.out.println(getArmPosition());
+        System.out.println(arm.getAppliedOutput());
+        System.out.println(position.wristPos);
+        System.out.println(wrist.get() * 300 + Constants.WRIST_OFFSET);
     }
 }

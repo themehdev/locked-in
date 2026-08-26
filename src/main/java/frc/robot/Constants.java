@@ -3,8 +3,8 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class Constants {
-    public static final int ENCODER_COUNTS_PER_REVOLUTION = 2150;
-    public static final boolean ENCODER_INVERTED = false;
+    public static final int ENCODER_COUNTS_PER_REVOLUTION = 312;
+    public static final boolean ENCODER_INVERTED = true;
 
     //Change these for later when tuning
     public static final double kP= 0.1; 
@@ -42,24 +42,25 @@ public class Constants {
     public static final double ARM_acceleration= 100.0; //RPM/s
     public static final double ARM_allowedProfileError= 5.0; //RPM
 
-    public static final double ARM_MOVING_VOLTAGE = 8.0;
-    public static final double ARM_HOLDING_VOLTAGE = 3.0;
+    public static final double ARM_MOVING_VOLTAGE = 11.0;
+    public static final double ARM_HOLDING_VOLTAGE = 6.0;
     public static final double ARM_HOLDING_THRESHOLD = 8.0;
-    public static final double ARM_DONE_THRESHOLD = 1.0;
+    public static final double ARM_DONE_THRESHOLD = 2.0;
+
+    public static final double ARM_OFFSET = -38.0;
+    public static final double WRIST_PHYSTICAL_OFFSET = -300.0;
+    public static final double WRIST_OFFSET = -90.0;
 
     public enum POSITIONS {
-        STOWED(90.0, -90.0),
+        STOWED(ARM_OFFSET, -WRIST_OFFSET),
         WAIT_COLLECT(0.0, 0.0),
-        COLLECT(10.0, -10.0), 
-        L1(5.0, -5.0),
-        L1_PLACED(-5.0, 5.0),
-        L2(30.0, -30.0), 
-        L2_PLACED(20.0, -20.0),
-        L3(60.0, -60.0), 
-        L3_PLACED(50.0, -50.0),
-        TOP_READY(100.0, -100.0),
-        TOP_PLACING(100.0, -30.0),
-        TOP_PLACED(110.0, -20.0);
+        COLLECT(20.0, -15.0), 
+        L1(25.0, -20.0),
+        L1_PLACED(15.0, -5.0),
+        L2(55.0, -50.0), 
+        L2_PLACED(40.0, -30.0),
+        L3(80.0, -70.0), 
+        L3_PLACED(70.0, -60.0);
 
         public final double armPos;
         public final double wristPos;
