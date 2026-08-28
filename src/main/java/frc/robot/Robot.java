@@ -8,6 +8,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Constants.POSITIONS;
 
 public class Robot extends TimedRobot {
   private final XboxController m_controller = new XboxController(0);
@@ -21,48 +22,28 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(10);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(10);
 
-  private final boolean LEFT_SIDE_AUTO = false;
-
-  private final double LEFT_SIDE_AUTO_DELAY = 4;
-
-  private final double AUTO_DELAY_MULTIPLIER = 7.5/(Drivetrain.kMaxSpeed - 0.75);
-
   public void autonomousInit() {
         m_enabledTimer.reset();
         m_enabledTimer.start();
         armPos = Constants.POSITIONS.STOWED;
-        //m_arm.resetArmEncoder();
+        m_arm.resetArmEncoder();
     }
 
   @Override
   public void autonomousPeriodic() {
-
-    if(LEFT_SIDE_AUTO){
-      // if(!m_enabledTimer.hasElapsed((4.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) && m_enabledTimer.hasElapsed((LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER)){
-      //   drive(Drivetrain.kMaxSpeed, 0, 0, false);
-      // }else if (m_enabledTimer.hasElapsed((10.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) && !m_enabledTimer.hasElapsed((13.0 + LEFT_SIDE_AUTO_DELAY)*AUTO_DELAY_MULTIPLIER) ){
-      //   drive(-Drivetrain.kMaxSpeed, 0, -1.25 * 1/AUTO_DELAY_MULTIPLIER, false);
-      // }else{
-      //   drive(0, 0, 0, false);
-      // }
+    if(!m_enabledTimer.hasElapsed(2.0)){
+      m_arm.setPosition(Constants.POSITIONS.L1_MID);
+    }else if(!m_enabledTimer.hasElapsed(4.0)){
+      m_arm.setPosition(Constants.POSITIONS.L2_MID);
+    }else if(!m_enabledTimer.hasElapsed(15.0)){
+      m_arm.setPosition(Constants.POSITIONS.L3_MID);
     }else{
-      // if(!m_enabledTimer.hasElapsed(1.3*AUTO_DELAY_MULTIPLIER)){
-      //   drive(0, -Drivetrain.kMaxSpeed, 0, false);
-      // }else if (!m_enabledTimer.hasElapsed(5.5*AUTO_DELAY_MULTIPLIER)){
-      //   drive(Drivetrain.kMaxSpeed, 0, 0.5 * 1/AUTO_DELAY_MULTIPLIER, false);
-      // }else if (!m_enabledTimer.hasElapsed(6.2*AUTO_DELAY_MULTIPLIER)){
-      //   drive(0, 0, -Drivetrain.kMaxSpeed, false);
-      // }else if (!m_enabledTimer.hasElapsed(7.0*AUTO_DELAY_MULTIPLIER)){
-      //   drive(Drivetrain.kMaxSpeed, 0, 0, false);
-      // }else if (!m_enabledTimer.hasElapsed(10.0*AUTO_DELAY_MULTIPLIER)){
-      //   drive(-Drivetrain.kMaxSpeed * 0.8, -Drivetrain.kMaxSpeed * 0.25, 0, false);
-      // }else{
-      //   drive(0, 0, 0, false);
-      // }
+      m_arm.setPosition(Constants.POSITIONS.L3_PLACED);
     }
-    
-
-    //m_mecanum.updateOdometry();
+      
+    if(m_enabledTimer.hasElapsed(10.0) && !m_enabledTimer.hasElapsed(15.0)){
+      drive(3.0, 0.0, 0.0, false);
+    }
   }
 
   private double deadbandController(double val){
@@ -76,9 +57,7 @@ public class Robot extends TimedRobot {
         // 2. Reset and start the timer when teleop is enabled
         m_enabledTimer.reset();
         m_enabledTimer.start();
-        //TODO: REMOVE LATER
         armPos = Constants.POSITIONS.STOWED;
-        //m_arm.resetArmEncoder();
     }
 
   @Override
@@ -110,13 +89,20 @@ public class Robot extends TimedRobot {
       case STOWED:
         if(m_controller.getRightBumperButtonPressed()){
           armPos = Constants.POSITIONS.WAIT_COLLECT;
+          m_arm.resetArmEncoder();
         }
         break;
       case WAIT_COLLECT:
         if(m_controller.getRightBumperButtonPressed()){
           armPos = Constants.POSITIONS.COLLECT;
+        }else if(m_controller.getLeftBumperButtonPressed()){
+          armPos = Constants.POSITIONS.GROUND_COLECT;
         }
         break;
+      case GROUND_COLECT:
+        if(m_controller.getRightBumperButtonPressed()){
+          armPos = Constants.POSITIONS.COLLECT;
+        }
       case COLLECT:
         if(m_controller.getRightBumperButtonPressed()){
           armPos = Constants.POSITIONS.WAIT_COLLECT;
@@ -129,8 +115,13 @@ public class Robot extends TimedRobot {
         }
         break;
       case L1:
+        if(m_controller.getXButtonPressed()){
+          armPos = POSITIONS.L1_MID;
+        }
+
+      case L1_MID:
         if(m_controller.getRightBumperButtonPressed()){
-          armPos = Constants.POSITIONS.L1_PLACED;
+          armPos = Constants.POSITIONS.WAIT_COLLECT;
         }else if(m_controller.getPOV() == 0){
           armPos = Constants.POSITIONS.L3;
         }else if(m_controller.getPOV() == 270){
@@ -141,6 +132,10 @@ public class Robot extends TimedRobot {
 
         break;
       case L2:
+        if(m_controller.getXButtonPressed()){
+          armPos = POSITIONS.L2_MID;
+        }
+      case L2_MID:
         if(m_controller.getRightBumperButtonPressed()){
           armPos = Constants.POSITIONS.L2_PLACED;
         }else if(m_controller.getPOV() == 0){
@@ -153,6 +148,10 @@ public class Robot extends TimedRobot {
         
         break;
       case L3:
+        if(m_controller.getXButtonPressed()){
+          armPos = POSITIONS.L3_MID;
+        }
+      case L3_MID:
         if(m_controller.getRightBumperButtonPressed()){
           armPos = Constants.POSITIONS.L3_PLACED;
         }else if(m_controller.getPOV() == 0){
@@ -177,8 +176,15 @@ public class Robot extends TimedRobot {
         break;
     }
 
-    m_arm.setPosition(armPos);
-
+    if(m_controller.getLeftBumperButtonPressed() && !armPos.equals(Constants.POSITIONS.WAIT_COLLECT)){
+      armPos = Constants.POSITIONS.WAIT_COLLECT;
+    }
+    if(!armPos.equals(Constants.POSITIONS.STOWED)){
+      m_arm.setPosition(armPos);
+    }else{
+      m_arm.setWrist(Constants.POSITIONS.STOWED.wristPos);
+    }
+    
   }
 
   private void drive(double x, double y, double rot, boolean fieldRelative) {

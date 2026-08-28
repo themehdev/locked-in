@@ -82,9 +82,13 @@ public class Arm {
         // }
     }
 
-    public void setPosition(Constants.POSITIONS position) {
-        double wristPos = (position.wristPos - Constants.WRIST_OFFSET)/300.0;
+    public void setWrist(double degs){
+        double wristPos = (degs - Constants.WRIST_OFFSET)/300.0;
         wrist.set(wristPos);
+    }
+
+    public void setPosition(Constants.POSITIONS position) {
+        setWrist(position.wristPos);
         setArmPosition(position.armPos);
 
         System.out.println(position.name());

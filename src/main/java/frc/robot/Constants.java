@@ -51,18 +51,22 @@ public class Constants {
     public static final double WRIST_PHYSTICAL_OFFSET = -300.0;
     public static final double WRIST_OFFSET = -90.0;
 
-    public static final double ARM_MAX_POWER_DEGS = 7.0;
+    public static final double ARM_MAX_POWER_DEGS = 8.0;
 
     public enum POSITIONS {
         STOWED(ARM_OFFSET, -WRIST_OFFSET),
-        WAIT_COLLECT(-5.0, 3.0),
-        COLLECT(11.0, -6.0), 
-        L1(11.0, -5.0),
+        GROUND_COLECT(-25, -70.0),
+        WAIT_COLLECT(-5.0, 6.0),
+        COLLECT(13.0, 6.0), 
+        L1(13.0, -2.0),
+        L1_MID(5.0, 0.0),
         L1_PLACED(5.0, -0.0),
-        L2(66.0, -50.0), 
-        L2_PLACED(50.0, -45.0),
-        L3(127.0, -75.0), 
-        L3_PLACED(120.0, -70.0);
+        L2(66.0, -45.0),
+        L2_MID(60.0, -40.0),
+        L2_PLACED(40.0, -40.0),
+        L3(113.0, -65.0), 
+        L3_MID(110.0, -60.0),
+        L3_PLACED(85.0, -60.0);
         
 
         public final double armPos;
