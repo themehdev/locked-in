@@ -43,7 +43,7 @@ public class Constants {
     public static final double ARM_allowedProfileError= 5.0; //RPM
 
     public static final double ARM_MOVING_VOLTAGE = 11.0;
-    public static final double ARM_HOLDING_VOLTAGE = 6.0;
+    public static final double ARM_HOLDING_VOLTAGE = 2.0;
     public static final double ARM_HOLDING_THRESHOLD = 8.0;
     public static final double ARM_DONE_THRESHOLD = 2.0;
 
@@ -51,16 +51,19 @@ public class Constants {
     public static final double WRIST_PHYSTICAL_OFFSET = -300.0;
     public static final double WRIST_OFFSET = -90.0;
 
+    public static final double ARM_MAX_POWER_DEGS = 7.0;
+
     public enum POSITIONS {
         STOWED(ARM_OFFSET, -WRIST_OFFSET),
-        WAIT_COLLECT(0.0, 0.0),
-        COLLECT(20.0, -15.0), 
-        L1(25.0, -20.0),
-        L1_PLACED(15.0, -5.0),
-        L2(55.0, -50.0), 
-        L2_PLACED(40.0, -30.0),
-        L3(80.0, -70.0), 
-        L3_PLACED(70.0, -60.0);
+        WAIT_COLLECT(-5.0, 3.0),
+        COLLECT(11.0, -6.0), 
+        L1(11.0, -5.0),
+        L1_PLACED(5.0, -0.0),
+        L2(66.0, -50.0), 
+        L2_PLACED(50.0, -45.0),
+        L3(127.0, -75.0), 
+        L3_PLACED(120.0, -70.0);
+        
 
         public final double armPos;
         public final double wristPos;

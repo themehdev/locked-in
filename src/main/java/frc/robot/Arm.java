@@ -53,17 +53,33 @@ public class Arm {
         arm.getEncoder().setPosition(Constants.ARM_OFFSET/360.0);
     }
 
+    private double clamp(double num, double min, double max){
+        if(num <= min){
+            return min;
+        }else if(num >= max){
+            return max;
+        }else{
+            return num;
+        }
+    }
+
 
     private void setArmPosition(double pos) {
         double position = pos;
-        double multiplier = getArmPosition() < position ? 1.0 : -0.0;
-        if(Math.abs(getArmPosition() - position) > Constants.ARM_HOLDING_THRESHOLD) {
-            arm.setVoltage(Constants.ARM_MOVING_VOLTAGE * multiplier);
-        } else if (Math.abs(getArmPosition() - position) > Constants.ARM_DONE_THRESHOLD) {
-            arm.setVoltage(Constants.ARM_HOLDING_VOLTAGE * multiplier);
-        } else {
-            arm.setVoltage(0.0);
-        }
+        double multiplier = getArmPosition() < position ? 1.0 : 0.75;
+
+        double posDelta = (position - getArmPosition());
+
+        double to_volts_scaler = (12.0/(Constants.ARM_MAX_POWER_DEGS + Constants.ARM_HOLDING_VOLTAGE));
+
+        arm.setVoltage(clamp((posDelta * multiplier * to_volts_scaler) + Constants.ARM_HOLDING_VOLTAGE, -11.5, 11.5));
+        // if(Math.abs(getArmPosition() - position) > Constants.ARM_HOLDING_THRESHOLD) {
+        //     arm.setVoltage(Constants.ARM_MOVING_VOLTAGE * multiplier);
+        // } else if (Math.abs(getArmPosition() - position) > Constants.ARM_DONE_THRESHOLD) {
+        //     arm.setVoltage(Constants.ARM_HOLDING_VOLTAGE * multiplier);
+        // } else {
+        //     arm.setVoltage(0.0);
+        // }
     }
 
     public void setPosition(Constants.POSITIONS position) {

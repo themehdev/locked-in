@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
         m_enabledTimer.reset();
         m_enabledTimer.start();
         armPos = Constants.POSITIONS.STOWED;
-        m_arm.resetArmEncoder();
+        //m_arm.resetArmEncoder();
     }
 
   @Override
@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
         m_enabledTimer.start();
         //TODO: REMOVE LATER
         armPos = Constants.POSITIONS.STOWED;
-        m_arm.resetArmEncoder();
+        //m_arm.resetArmEncoder();
     }
 
   @Override
