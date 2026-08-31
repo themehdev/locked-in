@@ -31,18 +31,27 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    if(!m_enabledTimer.hasElapsed(2.0)){
-      m_arm.setPosition(Constants.POSITIONS.L1_MID);
-    }else if(!m_enabledTimer.hasElapsed(4.0)){
-      m_arm.setPosition(Constants.POSITIONS.L2_MID);
+    if(!m_enabledTimer.hasElapsed(0.5)){
+      m_arm.runArmVolts(3.5);
+      m_arm.setWrist(Constants.POSITIONS.STOWED.wristPos);
+    }else if(!m_enabledTimer.hasElapsed(1.75)){
+      m_arm.runArmVolts(4.5);
+      m_arm.setWrist(Constants.POSITIONS.L2.wristPos);    
     }else if(!m_enabledTimer.hasElapsed(15.0)){
       m_arm.setPosition(Constants.POSITIONS.L3_MID);
-    }else{
+    }else if(!m_enabledTimer.hasElapsed(20.0)){
       m_arm.setPosition(Constants.POSITIONS.L3_PLACED);
+    }else{
+      m_arm.setWrist(Constants.POSITIONS.STOWED.wristPos);
+      m_arm.runArmVolts(-3.0);
     }
       
-    if(m_enabledTimer.hasElapsed(10.0) && !m_enabledTimer.hasElapsed(15.0)){
-      drive(3.0, 0.0, 0.0, false);
+    if(m_enabledTimer.hasElapsed(10.0) && !m_enabledTimer.hasElapsed(14.0)){
+      drive(4.0, 0.0, 0.0, false);
+    }else if(m_enabledTimer.hasElapsed(16.0) && !m_enabledTimer.hasElapsed(18.5)){
+      drive(-3.0, 0.0, 0.0, false);
+    }else{
+      drive(0.0, 0.0, 0.0, false);
     }
   }
 
@@ -83,7 +92,7 @@ public class Robot extends TimedRobot {
     // the right by default.
     final var rot = -m_rotLimiter.calculate(deadbandController(m_controller.getRightX())) * Drivetrain.kMaxSpeed;
 
-    drive(xSpeed, ySpeed, rot, true);
+    drive(xSpeed * 0.5, ySpeed * 0.5, rot * 0.5, true);
 
     switch (armPos) {
       case STOWED:
@@ -183,6 +192,7 @@ public class Robot extends TimedRobot {
       m_arm.setPosition(armPos);
     }else{
       m_arm.setWrist(Constants.POSITIONS.STOWED.wristPos);
+      m_arm.runArmVolts(-5.0);
     }
     
   }

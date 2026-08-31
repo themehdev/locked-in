@@ -63,6 +63,10 @@ public class Arm {
         }
     }
 
+    public void runArmVolts(double volts){
+        arm.setVoltage(volts);
+    }
+
 
     private void setArmPosition(double pos) {
         double position = pos;

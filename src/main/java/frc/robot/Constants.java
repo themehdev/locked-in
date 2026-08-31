@@ -55,18 +55,18 @@ public class Constants {
 
     public enum POSITIONS {
         STOWED(ARM_OFFSET, -WRIST_OFFSET),
-        GROUND_COLECT(-25, -70.0),
-        WAIT_COLLECT(-5.0, 6.0),
-        COLLECT(13.0, 6.0), 
-        L1(13.0, -2.0),
-        L1_MID(5.0, 0.0),
+        GROUND_COLECT(-20, -70.0),
+        WAIT_COLLECT(-0.0, 6.0),
+        COLLECT(23.0, 6.0), 
+        L1(23.0, -2.0),
+        L1_MID(16.0, 0.0),
         L1_PLACED(5.0, -0.0),
-        L2(66.0, -45.0),
-        L2_MID(60.0, -40.0),
-        L2_PLACED(40.0, -40.0),
-        L3(113.0, -65.0), 
-        L3_MID(110.0, -60.0),
-        L3_PLACED(85.0, -60.0);
+        L2(78.0, -45.0),
+        L2_MID(72.0, -40.0),
+        L2_PLACED(44.0, -40.0),
+        L3(125.0, -65.0), 
+        L3_MID(121.0, -60.0),
+        L3_PLACED(89.0, -60.0);
         
 
         public final double armPos;
